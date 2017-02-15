@@ -11,7 +11,9 @@ The primary use of this program is to allow the output of older word processors 
 to be printed on a modern printer or displayed in a modern PDF reader with very high quality.
 
 The vast majority of Diablo 630 printer control codes are fully supported.  Additionally, you can
-specify the page size, character pitch, and page orientation at startup.
+specify the page size, character pitch, and page orientation at startup.  Many advanced Diablo
+630 print controls are supported including: auto-justification, auto-center, underline, bold,
+shadow, horizontal and vertical tabs, margins, microspacing, alternate color, and backward printing.
 
 The program is a 32-bit Windows command line application that should run on all versions of Microsoft
 Windows XP and later.  The source code is straightforward C and can probably be adapted to other
@@ -54,4 +56,5 @@ results in reasonable output.
 ## Licensing
 
 Copyright (C) 2017, Wayne Warthen, GPLv3
+
 wwarthen@wwarthen.com
