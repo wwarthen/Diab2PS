@@ -29,7 +29,7 @@ extension replaced with ".ps".
 
 The program includes a PostScript prologue file that is prepended to the output file.  This prologue file is required for the output file to be valid.  The default prologue file is called diab2ps.pro and is distributed with the program.  By default the program will expect to find the prologue file called diab2ps.pro in the same directory as the application.  The name and location of the prologue file can be overridden using the -p option.  Advanced users may create modified versions of the prologue file which would allow modifying things like font faces.
 
-The program has no automated installation.  Simply copy the program file (diab2ps.exe) and the prologue file (diab2ps.pro) to a convenient directory and execute the application from a command prompt.  Unless you override the prologue filename using the -p option, it is mandatory that the diab2ps.pro be located in the same directory as the program diab2ps.exe.  However, the program does not need to be in the "current" directory of the command prompt and would ideally be placed in a directory that is part of the command prompts search path.
+The program has no automated installation.  Simply copy the program file (diab2ps.exe) and the prologue file (diab2ps.pro) to a convenient directory and execute the application from a command prompt.  Unless you override the prologue filename using the -p option, it is mandatory that the diab2ps.pro be located in the same directory as the program diab2ps.exe.  However, the program does not need to be in the current directory of the command prompt and would ideally be placed in a directory that is part of the command prompt search path.
 
 ## Options
 
