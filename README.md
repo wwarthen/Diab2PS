@@ -43,9 +43,10 @@ The program includes a PostScript prologue file that is prepended to the output 
 ## Limitations
 
 * Proportional space printing is not supported.  However, auto-justification and centering is fully supported.
-* Auto carriage return is not supported.  In practice, this would rarely have any effect on the output formatting.
-* Reverse Printing is not supported.  This option is rarely used.  Note that backward printing is supported.
+* Auto carriage return is not supported.
+* Reverse Printing is not supported.  However, backward printing is supported.
 * Graphics and HyPlot modes are not supported.
+* Extended character sets are not supported.
 
 When the program encounters unsupported printer control codes, it will silently ignore them.  In most cases, this
 results in reasonable output.
