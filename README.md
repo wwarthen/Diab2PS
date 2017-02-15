@@ -11,21 +11,21 @@ The primary use of this program is to allow the output of older word processors 
 to be printed on a modern printer or displayed in a modern PDF reader with very high quality.
 
 The vast majority of Diablo 630 printer control codes are fully supported.  Additionally, you can
-specify the page size, character pitch, and page orientation at startup.  Many advanced Diablo
-630 print controls are supported including: auto-justification, auto-center, underline, bold,
+specify the initial page size, character pitch, and page orientation at startup.  Many advanced Diablo
+630 print controls are supported including: auto-justification, auto-center, auto-underscore, bold,
 shadow, horizontal and vertical tabs, margins, microspacing, alternate color, and backward printing.
 
-The program is a 32-bit Windows command line application that should run on all versions of Microsoft
-Windows XP and later.  The source code is straightforward C and can probably be adapted to other
+The program is a Windows command line application that should run on all versions of Microsoft
+Windows XP and later (32-bit or 64-bit).  The source code is straightforward C and can probably be adapted to other
 operating systems with minimal modification.
 
 ## Usage
 
-diab2ps [-fFPL] [-s {LET|A4}] [-t \<pitch\>] [-p \<prologue_file\>] [-o \<output_file\>] \<input_file\>
+diab2ps [-fFPL] \[-s {LET|A4}\] \[-t \<pitch\>\] \[-p \<prologue_file\>\] \[-o \<output_file\>\] \<input_file\>
 
 The \<input_file\> is a file containing Diablo 630 print output with imbedded printer control codes.  By default,
-the program will produce a PostScript encoded output file with the same name as \<input_file\>, but with an
-extension of ".ps".
+the program will produce a PostScript encoded output file with the same name as \<input_file\>, but with the
+extension replaced with ".ps".
 
 The program includes a PostScript prologue file that is prepended to the output file.  This prologue file is required for the output file to be valid.  The default prologue file is called diab2ps.pro and is distributed with the program.  By default the program will expect to find the prologue file called diab2ps.pro in the same directory as the application.  The name and location of the prologue file can be overridden using the -p option.  Advanced users may create modified versions of the prologue file which would allow modifying things like font faces.
 
@@ -42,16 +42,15 @@ The program includes a PostScript prologue file that is prepended to the output 
 | &#8209;p&nbsp;\<prologue_file\> | Specifies the name of the prologue file to prepend to the output file instead of the default file. |
 | &#8209;o&nbsp;\<output_file\> | Overrides the default output file name. |
 
-## Limitations
+## Notes
 
-* Proportional space printing is not supported.  However, auto-justification and centering is fully supported.
-* Auto carriage return is not supported.
+* The bold print mode on a Diablo 630 is implemented by mechanically double striking the character.  This wold have no effect in a PostScript file.  As a result, the bold print mode is implemented as italic font.
+* The standard Courier PostScript font is used.  This is a mono-spaced font, so Diablo 630 proportional spacing has no effect, but does not cause any issues in general.  Auto-justification and auto-centering are fully supported.
+* Auto carriage return is not supported, but this is generally not used or relevant.
 * Reverse Printing is not supported.  However, backward printing is supported.
 * Graphics and HyPlot modes are not supported.
 * Extended character sets are not supported.
-
-When the program encounters unsupported printer control codes, it will silently ignore them.  In most cases, this
-results in reasonable output.
+* Output has been verified to work well with ps2pdf for creation of PDF files.  Alternative PostScript to PDF converters (such as Adobe Acrobat Distiller) have not been tested.
 
 ## Licensing
 
