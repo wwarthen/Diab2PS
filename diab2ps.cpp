@@ -1,7 +1,7 @@
 /*
   Diab2PS - Diablo 630 to Postscript Translator
 	Copyright (C) 2017, Wayne Warthen, GPLv3
-	Version 0.9, February 14, 2017
+	Version 0.9.1, March 24, 2017
 */
 
 /*
@@ -20,8 +20,13 @@
 */		
 
 /*
-		Build with Open Watcom C/C++ 
-		cl diab2ps.cpp
+		For Windows:
+			Build with Open Watcom C/C++: "cl diab2ps.cpp"
+			Place prologue file (diab2ps.pro) in same directory as executable
+		
+		For Unix/Linux:
+			Build with GCC: "g++ diab2ps.cpp"
+			Place prologue file (diab2ps.pro) in /usr/share/diab2ps/
 */
 		
 /*
@@ -43,6 +48,8 @@
 #include <stdarg.h>
 #include <string.h>
 #include <unistd.h>
+#include <limits.h>
+#include <ctype.h>
 
 #define NUL 0x00
 #define BS 0x08
@@ -102,7 +109,7 @@ void Usage()
   printf("Usage: diab2ps [-fFPL] [-s {LET|A4}] [-t <pitch>] [-p <prologuefile>] [-o <outputfile>] <inputfile>\n");
 }
 
-int Error(char * szErrDesc, ...)
+int Error(const char * szErrDesc, ...)
 {
 	va_list arglist;
 	
@@ -552,17 +559,21 @@ void Process (int c)
 
 int main(int argc, char *argv[])
 {
-	char szPrologueFileSpec[_MAX_PATH] = "";
-	char szInputFileSpec[_MAX_PATH] = "";
-	char szOutputFileSpec[_MAX_PATH] = "";
+	char szPrologueFileSpec[PATH_MAX] = "";
+	char szInputFileSpec[PATH_MAX] = "";
+	char szOutputFileSpec[PATH_MAX] = "";
+	
+#if __WATCOMC__
 	char szDrive[_MAX_DRIVE] = "";
-  char szDir[_MAX_DIR] = "";
-  char szFileName[_MAX_FNAME] = "";
+	char szDir[_MAX_DIR] = "";
+	char szFileName[_MAX_FNAME] = "";
 	char szExt[_MAX_EXT] = "";
+#endif
+
 	char szPageSize[20] = "LET";
 	int c;
 	
-	printf("Diablo 630 to PostScript Translator\n");
+	printf("Diablo 630 to PostScript Translator, v0.9.1\n");
 	printf("Copyright (C) 2017, Wayne Warthen, GPLv3\n");
 	
 	while ((c = getopt(argc, argv, ":fFPLs:c:p:o:")) != -1)
@@ -583,18 +594,17 @@ int main(int argc, char *argv[])
 				break;
 				
 			case 'p':	// Prologue file override
-				if (_fullpath(szPrologueFileSpec, optarg, _MAX_PATH) == NULL)
-					return Error("Invalid prologue file specified '%s'", optarg);
+				strcpy(szPrologueFileSpec, optarg);
 				break;
 				
 			case 'o':	// Output file override
-				if (_fullpath(szOutputFileSpec, optarg, _MAX_PATH) == NULL)
-					return Error("Invalid output file specified '%s'", optarg);
+				strcpy(szOutputFileSpec, optarg);
 				break;
 				
 			case 's':
 				strcpy(szPageSize, optarg);
-				_strupr(szPageSize);
+				for (char * p = szPageSize; *p != '\0'; p++)
+					*p = toupper(*p);
 				if (!(!strcmp(szPageSize, "LET") || !strcmp(szPageSize, "A4")))
 					return Error("Invalid page size specified '%s'", szPageSize);
 				break;
@@ -621,11 +631,9 @@ int main(int argc, char *argv[])
     return 1;
   }
 	
+#ifdef __WATCOMC__
 	if (_fullpath(szInputFileSpec, argv[optind], _MAX_PATH) == NULL)
 		return Error("Invalid input file specified '%s'", argv[optind]);
-	
-	if (access(szInputFileSpec, F_OK) != 0)
-		return Error("Input file does not exist or is not readable '%s'", szInputFileSpec);
 	
 	if (szOutputFileSpec[0] == 0)
 	{
@@ -638,10 +646,34 @@ int main(int argc, char *argv[])
 		_splitpath(argv[0], szDrive, szDir, NULL, NULL);
 		_makepath(szPrologueFileSpec, szDrive, szDir, "diab2ps", "pro");
 	}
+#endif
+
+#ifdef __GNUC__
+	strcpy(szInputFileSpec, argv[optind]);
+	
+	if (szOutputFileSpec[0] == 0)
+	{
+		strcpy(szOutputFileSpec, szInputFileSpec);
+		char * p = strrchr(szOutputFileSpec, '/');
+		if (p == NULL)
+			p = szOutputFileSpec;
+		p = strrchr(p, '.');
+		if (p == NULL)
+			strcat(szOutputFileSpec, ".ps");
+		else
+			strcpy(p, ".ps");
+	}
+	
+	if (szPrologueFileSpec[0] == 0)
+		strcpy(szPrologueFileSpec, "/usr/share/diab2ps/diab2ps.pro");
+#endif
 	
   //printf("Prologue File Spec: %s\n", szPrologueFileSpec);
   //printf("Input File Spec: %s\n", szInputFileSpec);
   //printf("Output File Spec: %s\n", szOutputFileSpec);
+	
+	if (access(szInputFileSpec, F_OK) != 0)
+		return Error("Input file does not exist or is not readable '%s'", szInputFileSpec);
 	
   if ((fOut = fopen(szOutputFileSpec, "wb")) == NULL)
     return Error("Failed to open output file '%s'", szOutputFileSpec);
@@ -660,11 +692,15 @@ int main(int argc, char *argv[])
 
   //freopen_s(NULL, "rb", stdin);
   //freopen_s(NULL, "wb", stdout);
-	
+
+#if __WATCOMC__
 	_splitpath(szInputFileSpec, NULL, NULL, szFileName, szExt);
 	printf("\n%s%s ==> ", szFileName, szExt);
 	_splitpath(szOutputFileSpec, NULL, NULL, szFileName, szExt);
 	printf("%s%s\n\n", szFileName, szExt);
+#else
+	printf("\n%s ==> %s\n\n", szInputFileSpec, szOutputFileSpec);
+#endif
   
   nLineBuf = nLineIdx = 0;
 	nState = ST_IDLE;
