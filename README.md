@@ -6,6 +6,7 @@ Diablo 630 to PostScript Translator
 
 The **diab2ps** program converts Diablo 630 encoded print files into PostScript encoded print files.
 The resulting PostScript output files can be easily converted to PDF using common tools such as ps2pdf.
+They should also be printable directly to a PostScript printer.
 
 The primary use of this program is to allow the output of older word processors and text processors
 to be printed on a modern printer or displayed in a modern PDF reader with very high quality.
@@ -15,9 +16,8 @@ specify the initial page size, character pitch, and page orientation at startup.
 630 print controls are supported including: auto-justification, auto-center, auto-underscore, bold,
 shadow, horizontal and vertical tabs, margins, microspacing, alternate color, and backward printing.
 
-The program is a Windows command line application that should run on all versions of Microsoft
-Windows XP and later (32-bit or 64-bit).  The source code is straightforward C and can probably be adapted to other
-operating systems with minimal modification.
+This is a command line program for either Windows (32-bit or 64-bit) or Unix/Linux.  The source code is
+straightforward C and will currently compile under Open Watcom (Windows) and GCC (Unix/Linux).
 
 ## Usage
 
@@ -27,9 +27,17 @@ The \<input_file\> is a file containing Diablo 630 print output with imbedded pr
 the program will produce a PostScript encoded output file with the same name as \<input_file\>, but with the
 extension replaced with ".ps".
 
-The program includes a PostScript prologue file that is prepended to the output file.  This prologue file is required for the output file to be valid.  The default prologue file is called diab2ps.pro and is distributed with the program.  By default the program will expect to find the prologue file called diab2ps.pro in the same directory as the application.  The name and location of the prologue file can be overridden using the -p option.  Advanced users may create modified versions of the prologue file which would allow modifying things like font faces.
+The program includes a PostScript prologue file that is prepended to the output file.  This prologue file is required for the output file to be valid.  The default prologue file is called diab2ps.pro and is distributed with the program.  By default the program will expect to find the prologue file called diab2ps.pro in the same directory as the application (Windows) or in /usr/share/diab2ps/ (Unix/Linux).  The name and location of the prologue file can be overridden using the -p option. Advanced users may create modified versions of the prologue file which would allow modifying things like font faces.
 
-The program has no automated installation.  Simply copy the program file (diab2ps.exe) and the prologue file (diab2ps.pro) to a convenient directory and execute the application from a command prompt.  Unless you override the prologue filename using the -p option, it is mandatory that the diab2ps.pro be located in the same directory as the program diab2ps.exe.  However, the program does not need to be in the current directory of the command prompt and would ideally be placed in a directory that is part of the command prompt search path.
+The program has no automated installation.  Simply copy the program file (diab2ps.exe) and the prologue file (diab2ps.pro) to the appropriate directories and execute the application from a command prompt.
+
+### Windows Installation
+
+For Windows, a precompiled application is available.  You can download the zip file, extract the contents, and copy diab2ps.exe to any directory that is in your PATH search list.  If you are not clear what that is, you may simply copy the program to "C:\Program Files (x86)".  You should also copy diab2ps.pro to the same directory since the program will look for the prologue file in the same directory as the application by default.  Alternatively, you can specifiy the location of the prologue file using the -p option on the command line.
+
+### Unix/Linux Installation
+
+For Unix/Linux, you will need to compile the program first.  Download and decompress the source zip file.  The application is a single source file called diab2ps.cpp.  You will need the GCC compiler to build it.  Enter "g++ diab2ps.cpp" on the Unix/Linux command line to build the program.  The result will be called "a.out".  Normally, you would copy the file to /usr/bin/diab2ps.  You may also need to set the execute bit on the file using the command "chmod +x /usr/bin/diab2ps".  Additionally, you need to copy the prologue file (diab2ps.pro) to /usr/share/diab2ps/diab2ps.pro which is where the program will look for it by default.
 
 ## Options
 
